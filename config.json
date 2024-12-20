@@ -1,0 +1,53 @@
+{
+  "ks_url": "2222",
+  "keyword": {
+    "关键字匹配1": "访问 www.baidu.com",
+    "关键字匹配2": "https://img2.baidu.com/it/u=1310029438,409566289&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=1541.jpg",
+    "关键字匹配3": "https://v3-web.douyinvod.com/117f113148430da3ea0347cf9670121b/6763b814/video/tos/cn/tos-cn-ve-15/oIYO47eCgAXfG7NcAIFUpDaDnf90jK5EBBCJUE/?a=6383&ch=26&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=561&bt=561&cs=0&ds=6&ft=AJkeU_TLRR0s~0C3TDj2Nc.xBiGNbLiZy41U_4B_f9KSNv7TGW&mime_type=video_mp4&qs=12&rc=ZjY4ODwzNWY1ZDwzPDo6OEBpM25kaXk5cjx2dzMzNGkzM0A2LTAyLmMzX14xMi8yYTE0YSNeNDVgMmRzczZgLS1kLWFzcw%3D%3D&btag=c0000e00008000&cquery=100x_100z_100o_100w_100W&dy_q=1734577631&feature_id=46a7bb47b4fd1280f3d3825bf2b29388&l=20241219110710BAAFDFA18689EE3A42CE.mp3"
+  },
+
+  "single_chat_prefix": [""],
+  "single_chat_reply_prefix": "",
+  "group_chat_prefix": [
+    "@可爱尼"
+  ],
+  "group_name_white_list": [
+    "ChatGPT测试群",
+    "ChatGPT测试群2"
+  ],
+
+  "group_welc_fixed_msg": {
+    "ChatGPT测试群": "\uD83C\uDF89 欢迎\"{nickname}\\\"加入群聊！\n\uD83E\uDD73 与我对话记得 艾特 我哟~\n\uD83C\uDFA8 了解我的详细功能请输入：#help \n————————————\n\uD83D\uDCDA 发送关键词获取特定信息！\n\uD83C\uDF89 娱乐与资讯：\n  \uD83C\uDF05 早报: 发送“早报”获取早报。\n  \uD83D\uDC1F 摸鱼: 发送“摸鱼”获取摸鱼人日历。\n  \uD83D\uDD25 热榜: 发送“xx热榜”查看支持的热榜。\n  \uD83D\uDD25 八卦: 发送“八卦”获取明星八卦\n\uD83D\uDD0D 查询工具：\n  \uD83C\uDF26 天气: 发送“城市+天气”查天气，如“北京天气”。\n  \uD83D\uDCE6 快递: 发送“快递+单号”查询快递状态。如“快递112345655”\n  \uD83C\uDF0C 星座: 发送星座名称查看今日运势，如“白羊座”。",
+    "可爱尼的资源宝库": "欢迎\"{nickname}\"加入群聊！祝您在这里度过愉快的时光~ \uD83C\uDF1F\n\n--------------------\n搜剧命令：搜XX \n 其他资源搜索：全网搜XX"
+  },
+
+
+  "linkai_api_key": "Link_DDM1CHVpXZwvjg5mjLFKUBSkbCrgFHmASkziQqKh6i",
+  "linkai_app_code": "",
+
+  "channel_type": "wx",
+  "model": "moonshot-v1-8k",
+  "moonshot_api_key": "sk-NYEamEMFz1ag2qFGvpiMnSv6GBqj9A5NwQCpNueMjhl7SIWW",
+
+
+
+  "open_ai_api_key": "YOUR API KEY1",
+  "claude_api_key": "YOUR API KEY1",
+  "text_to_image": "",
+  "voice_to_text": "",
+  "text_to_voice": "",
+  "proxy": "",
+  "hot_reload": false,
+
+  "image_create_prefix": [
+    "画"
+  ],
+  "speech_recognition": true,
+  "group_speech_recognition": false,
+  "voice_reply_voice": false,
+  "conversation_max_tokens": 2500,
+  "expires_in_seconds": 3600,
+  "character_desc": "你是基于大语言模型的AI智能助手，旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。使用可爱的语气",
+  "temperature": 0.7
+
+}
