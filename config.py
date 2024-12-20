@@ -39,6 +39,10 @@ available_setting = {
     "group_chat_in_one_session": ["ChatGPT测试群"],  # 支持会话上下文共享的群名称
     "nick_name_black_list": [],  # 用户昵称黑名单
     "group_welcome_msg": "",  # 配置新人进群固定欢迎语，不配置则使用随机风格欢迎
+    "group_welc_fixed_msg": { ## 这里可以为特定群里配置特定的固定欢迎语
+        "ChatGPT测试群": "\uD83C\uDF89 欢迎\"{nickname}\\\"加入群聊！\n\uD83E\uDD73 与我对话记得 艾特 我哟~\n\uD83C\uDFA8 了解我的详细功能请输入：#help \n————————————\n\uD83D\uDCDA 发送关键词获取特定信息！\n\uD83C\uDF89 娱乐与资讯：\n  \uD83C\uDF05 早报: 发送“早报”获取早报。\n  \uD83D\uDC1F 摸鱼: 发送“摸鱼”获取摸鱼人日历。\n  \uD83D\uDD25 热榜: 发送“xx热榜”查看支持的热榜。\n  \uD83D\uDD25 八卦: 发送“八卦”获取明星八卦\n\uD83D\uDD0D 查询工具：\n  \uD83C\uDF26 天气: 发送“城市+天气”查天气，如“北京天气”。\n  \uD83D\uDCE6 快递: 发送“快递+单号”查询快递状态。如“快递112345655”\n  \uD83C\uDF0C 星座: 发送星座名称查看今日运势，如“白羊座”。",
+        "可爱尼的资源宝库": "欢迎\"{nickname}\"加入群聊！祝您在这里度过愉快的时光~ \uD83C\uDF1F\n\n--------------------\n搜剧命令：搜XX \n 其他资源搜索：全网搜XX"
+    },
     "trigger_by_self": False,  # 是否允许机器人触发
     "text_to_image": "dall-e-2",  # 图片生成模型，可选 dall-e-2, dall-e-3
     # Azure OpenAI dall-e-3 配置

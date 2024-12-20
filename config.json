@@ -1,10 +1,5 @@
 {
   "ks_url": "2222",
-  "keyword": {
-    "关键字匹配1": "访问 www.baidu.com",
-    "关键字匹配2": "https://img2.baidu.com/it/u=1310029438,409566289&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=1541.jpg",
-    "关键字匹配3": "https://v3-web.douyinvod.com/117f113148430da3ea0347cf9670121b/6763b814/video/tos/cn/tos-cn-ve-15/oIYO47eCgAXfG7NcAIFUpDaDnf90jK5EBBCJUE/?a=6383&ch=26&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=561&bt=561&cs=0&ds=6&ft=AJkeU_TLRR0s~0C3TDj2Nc.xBiGNbLiZy41U_4B_f9KSNv7TGW&mime_type=video_mp4&qs=12&rc=ZjY4ODwzNWY1ZDwzPDo6OEBpM25kaXk5cjx2dzMzNGkzM0A2LTAyLmMzX14xMi8yYTE0YSNeNDVgMmRzczZgLS1kLWFzcw%3D%3D&btag=c0000e00008000&cquery=100x_100z_100o_100w_100W&dy_q=1734577631&feature_id=46a7bb47b4fd1280f3d3825bf2b29388&l=20241219110710BAAFDFA18689EE3A42CE.mp3"
-  },
 
   "single_chat_prefix": [""],
   "single_chat_reply_prefix": "",
