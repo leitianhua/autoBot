@@ -1,5 +1,6 @@
 {
-  "ks_url": "2222",
+  "src_url": "ks.jizhi.me",
+  "hot_reload": true,
 
   "single_chat_prefix": [""],
   "single_chat_reply_prefix": "",
@@ -32,7 +33,6 @@
   "voice_to_text": "",
   "text_to_voice": "",
   "proxy": "",
-  "hot_reload": false,
 
   "image_create_prefix": [
     "画"

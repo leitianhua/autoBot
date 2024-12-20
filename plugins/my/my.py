@@ -1,17 +1,19 @@
-# encoding:gbk
+# encoding:utf-8
 import threading
 import requests
-import plugins
 from bridge.context import ContextType
 from bridge.reply import Reply, ReplyType
+from channel.wechat.wechat_channel import WechatChannel
+import plugins
 from plugins import *
-from reloading import reloading
+from common.log import logger
+
 
 @plugins.register(
     name="My",
     desire_priority=100,
     hidden=True,
-    desc="×Ô¶¨Òå²å¼ş¹¦ÄÜ",
+    desc="è‡ªå®šä¹‰æ’ä»¶åŠŸèƒ½",
     version="1.0",
     author="lei",
 )
@@ -23,10 +25,11 @@ class My(Plugin):
             conf = super().load_config()
             curdir = os.path.dirname(__file__)
             if not conf:
-                # ÅäÖÃ²»´æÔÚÔòĞ´ÈëÄ¬ÈÏÅäÖÃ
+                # é…ç½®ä¸å­˜åœ¨åˆ™å†™å…¥é»˜è®¤é…ç½®
+                logger.info("é…ç½®ä¸å­˜åœ¨åˆ™å†™å…¥é»˜è®¤é…ç½®")
                 config_path = os.path.join(curdir, "config.json")
                 if not os.path.exists(config_path):
-                    conf = {"src_url": "www.baidu.com"}
+                    conf = {"src_url": "ks.jizhi.me1"}
                     with open(config_path, "w") as f:
                         json.dump(conf, f, indent=4)
 
@@ -38,30 +41,42 @@ class My(Plugin):
             logger.warn("[My] init failed")
             raise e
 
-    # Õâ¸öÊÂ¼şÖ÷ÒªÓÃÓÚ´¦ÀíÉÏÏÂÎÄĞÅÏ¢¡£µ±ÓÃ»§·¢ËÍÏûÏ¢Ê±£¬ÏµÍ³»á´¥·¢Õâ¸öÊÂ¼ş£¬ÒÔ±ã¸ù¾İÉÏÏÂÎÄÀ´¾ö¶¨ÈçºÎÏìÓ¦ÓÃ»§µÄÇëÇó¡£ËüÍ¨³£ÓÃÓÚ»ñÈ¡ºÍ¹ÜÀí¶Ô»°µÄÉÏÏÂÎÄ×´Ì¬¡£
+    # è¿™ä¸ªäº‹ä»¶ä¸»è¦ç”¨äºå¤„ç†ä¸Šä¸‹æ–‡ä¿¡æ¯ã€‚å½“ç”¨æˆ·å‘é€æ¶ˆæ¯æ—¶ï¼Œç³»ç»Ÿä¼šè§¦å‘è¿™ä¸ªäº‹ä»¶ï¼Œä»¥ä¾¿æ ¹æ®ä¸Šä¸‹æ–‡æ¥å†³å®šå¦‚ä½•å“åº”ç”¨æˆ·çš„è¯·æ±‚ã€‚å®ƒé€šå¸¸ç”¨äºè·å–å’Œç®¡ç†å¯¹è¯çš„ä¸Šä¸‹æ–‡çŠ¶æ€ã€‚
     def on_handle_context(self, context: EventContext):
         if context["context"].type not in [
             ContextType.TEXT,
         ]:
             return
-        # »ñÈ¡ÏûÏ¢
-        content_search = context["context"].content.strip()
-        logger.info(f"[my]µ±Ç°¼àÌıĞÅÏ¢£º {content_search}")
 
-        if any(content_search.startswith(prefix) for prefix in ["ËÑ¾ç", "ËÑ", "È«ÍøËÑ"]) and not content_search.startswith("ËÑË÷"):
+        # å‘é€æ–‡æœ¬
+        def wx_send(reply_content):
+            WechatChannel().send(Reply(ReplyType.TEXT, reply_content), context["context"])
 
-            def process_string2(s):
-                # ÅĞ¶ÏÊÇ·ñ°üº¬@
-                if '@' in s:
-                    # ÕÒµ½@×Ö·ûµÄÎ»ÖÃ
-                    index = s.index('@')
-                    # É¾³ı°üº¬@ÔÚÄÚºóÃæµÄËùÓĞ×Ö·û
-                    return s[:index]
-                else:
-                    return s
+        # è·å–æ¶ˆæ¯
+        msg_content = context["context"].content.strip()
+        logger.info(f"[my]å½“å‰ç›‘å¬ä¿¡æ¯ï¼š {msg_content}")
+        logger.info(f'[my]å½“å‰é…ç½®confï¼š {conf()}')
+        logger.info(f'[my]å½“å‰é…ç½®src_urlï¼š {conf().get("src_url")}')
 
-            def search_question(question):
-                url = 'https://www.xinyueso.com/api/search'
+        # "æœå‰§", "æœ", "å…¨ç½‘æœ"
+        if any(msg_content.startswith(prefix) for prefix in ["æœå‰§", "æœ", "å…¨ç½‘æœ"]) and not msg_content.startswith("æœç´¢"):
+            # è·å–ç”¨æˆ·å
+            user_nickname = context["context"]["msg"].actual_user_nickname
+
+            # ç§»é™¤å‰ç¼€
+            def remove_prefix(content, prefixes):
+                for prefix in prefixes:
+                    if content.startswith(prefix):
+                        return content[len(prefix):].strip()
+                return content.strip()
+
+            # æœç´¢å†…å®¹
+            search_content = remove_prefix(msg_content, ["æœå‰§", "æœ", "å…¨ç½‘æœ"]).strip()
+
+            # http æœç´¢èµ„æº
+            def to_search(question):
+                logger.info(f"æœç´¢èµ„æºï¼š{question}")
+                url = f'https://{conf().get("src_url")}/api/search'
                 params = {
                     'is_time': '1',
                     'page_no': '1',
@@ -70,112 +85,79 @@ class My(Plugin):
                 }
                 try:
                     response = requests.get(url, params=params)
-                    response.raise_for_status()  # ¼ì²éÇëÇóÊÇ·ñ³É¹¦
-                    responseData = response.json().get('data', {}).get('items', [])
-                    return responseData
+                    response.raise_for_status()  # æ£€æŸ¥è¯·æ±‚æ˜¯å¦æˆåŠŸ
+                    response_data = response.json().get('data', {}).get('items', [])
+                    return response_data
                 except requests.exceptions.RequestException as e:
                     print(f"Error fetching data: {e}")
                     return []
 
-            def search_alone(question):
-                url = 'https://www.xinyueso.com/api/other/all_search'
+            # http å…¨ç½‘æœ
+            def to_search_all(question):
+                url = f'https://{conf().get("src_url")}/api/other/all_search'
                 payload = {
                     'title': question
                 }
                 try:
                     response = requests.post(url, json=payload)
                     response.raise_for_status()
-                    responseData = response.json().get('data', [])
-                    return responseData
+                    response_data = response.json().get('data', [])
+                    return response_data
                 except requests.exceptions.RequestException as e:
                     print(f"Error fetching data: {e}")
                     return []
 
-            def remove_prefix(content, prefixes):
-                for prefix in prefixes:
-                    if content.startswith(prefix):
-                        return content[len(prefix):].strip()
-                return content.strip()
-
-            def perform_search():
-                # ³õ´ÎËÑË÷
-                response_data = search_question(contentSearch) if not content_search.startswith("È«ÍøËÑ") else []
+            # å›å¤å†…å®¹
+            def send_build(response_data):
                 if not response_data:
-                    # Í¨ÖªÓÃ»§ÉîÈëËÑË÷
-                    reply_text2 = f"@{user_nickname}\nÕıÔÚÉîÈëËÑË÷£¬ÇëÉÔµÈ..."
-                    self._send_reply(context, Reply(ReplyType.TEXT, reply_text2))
-
-                    # Æô¶¯Ïß³Ì½øĞĞµÚ¶ş´ÎËÑË÷
-                    def perform_second_search():
-                        response_data = search_alone(contentSearch)
-                        send_final_reply(response_data, reply_text, context)
-
-                    second_search_thread = threading.Thread(target=perform_second_search)
-                    second_search_thread.start()
+                    reply_text_final = f"""
+                                {user_nickname}\næœªæ‰¾åˆ°ï¼Œå¯æ¢ä¸ªå…³é”®è¯å°è¯•å“¦~
+                                \nâš ï¸å®å°‘å†™ï¼Œä¸å¤šå†™ã€é”™å†™~
+                                \n--------------------
+                                \nå¯è®¿é—®ä»¥ä¸‹é“¾æ¥æäº¤èµ„æºéœ€æ±‚
+                                \n'https://{conf().get("src_url")}
+                           """
                 else:
-                    # Èç¹ûµÚÒ»´ÎËÑË÷ÕÒµ½½á¹û£¬·¢ËÍ×îÖÕ»Ø¸´
-                    send_final_reply(response_data, reply_text, context)
-
-            def send_final_reply(response_data, reply_text, context):
-                is_times = 0
-                if not response_data:
-                    reply_text_final = f"{reply_text}\nÎ´ÕÒµ½£¬¿É»»¸ö¹Ø¼ü´Ê³¢ÊÔÅ¶~"
-                    reply_text_final += "\n??ÄşÉÙĞ´£¬²»¶àĞ´¡¢´íĞ´~"
-                    reply_text_final += "\n--------------------"
-                    reply_text_final += "\n¿É·ÃÎÊÒÔÏÂÁ´½ÓÌá½»×ÊÔ´ĞèÇó"
-                    reply_text_final += "\nhttps://www.xinyueso.com"
-                else:
-                    reply_text_final = f"{reply_text}\n--------------------"
+                    reply_text_final = f"@{user_nickname} æœç´¢å†…å®¹ï¼š{search_content}\n--------------------"
                     for item in response_data:
-                        if item.get('is_time') == 1:
-                            reply_text_final += f"\n ?? {item.get('title', 'Î´Öª±êÌâ')}"
-                            is_times += 1
-                        else:
-                            reply_text_final += f"\n{item.get('title', 'Î´Öª±êÌâ')}"
-                        reply_text_final += f"\n{item.get('url', 'Î´ÖªURL')}"
+                        reply_text_final += f"\n ğŸŒï¸{item.get('title', 'æœªçŸ¥æ ‡é¢˜')}"
+                        reply_text_final += f"\n{item.get('url', 'æœªçŸ¥URL')}"
                         reply_text_final += "\n--------------------"
-
-                    if is_times > 0:
-                        reply_text_final += "\n ??×ÊÔ´À´Ô´ÍøÂç£¬30·ÖÖÓºóÉ¾³ı"
+                    if 'is_time=0' in str(response_data):
+                        reply_text_final += "\n ğŸŒï¸èµ„æºæ¥æºç½‘ç»œï¼Œ30åˆ†é’Ÿååˆ é™¤"
                         reply_text_final += "\n--------------------"
                     else:
-                        reply_text_final += "\n ²»ÊÇ¶Ì¾ç£¿Çë³¢ÊÔ£ºÈ«ÍøËÑXX"
+                        reply_text_final += "\n ä¸æ˜¯çŸ­å‰§ï¼Ÿè¯·å°è¯•ï¼šå…¨ç½‘æœXX"
                         reply_text_final += "\n--------------------"
 
-                    reply_text_final += "\n»¶Ó­¹Û¿´£¡Èç¹ûÏ²»¶¿ÉÒÔº°ÄãµÄÅóÓÑÒ»ÆğÀ´Å¶"
+                    reply_text_final += "\næ¬¢è¿è§‚çœ‹ï¼å¦‚æœå–œæ¬¢å¯ä»¥å–Šä½ çš„æœ‹å‹ä¸€èµ·æ¥å“¦"
+                wx_send(reply_text_final)
 
-                reply = Reply(ReplyType.TEXT, reply_text_final)
-                self._send_reply(context, reply)
+            if 'å…¨ç½‘æœ' in search_content:
+                send_build(to_search_all(search_content))
+            else:
+                # åˆæ¬¡æœç´¢
+                def first_search(question1):
+                    response_data = to_search(search_content)
+                    if not response_data:
+                        # é€šçŸ¥ç”¨æˆ·æ·±å…¥æœç´¢
+                        wx_send(f"@{user_nickname}\næ­£åœ¨æ·±å…¥æœç´¢ï¼Œè¯·ç¨ç­‰...")
 
-            content_search = process_string2(content_search)
-            user_nickname = context['msg'].actual_user_nickname
-            reply_text = f"@{user_nickname}"
-            contentSearch = remove_prefix(content_search, ["ËÑ¾ç", "ËÑ", "È«ÍøËÑ"]).strip()
+                        # å¯åŠ¨çº¿ç¨‹è¿›è¡Œç¬¬äºŒæ¬¡æœç´¢
+                        def second_search():
+                            send_build(to_search_all(question1))
 
+                        threading.Thread(target=second_search).start()
+                    else:
+                        # å¦‚æœç¬¬ä¸€æ¬¡æœç´¢æ‰¾åˆ°ç»“æœï¼Œå‘é€æœ€ç»ˆå›å¤
+                        send_build(response_data)
 
-            # Æô¶¯Ïß³ÌÖ´ĞĞµÚÒ»´ÎËÑË÷
-            first_search_thread = threading.Thread(target=perform_search)
-            first_search_thread.start()
-            return None
+                # å¯åŠ¨çº¿ç¨‹æ‰§è¡Œç¬¬ä¸€æ¬¡æœç´¢
+                threading.Thread(target=first_search(search_content)).start()
 
-
-
-
-        # if "ËÑ" in content:
-        #     reply = Reply(ReplyType.TEXT, f"url: {self.src_url}")
-        #     e_context["reply"] = reply
-        #     e_context.action = EventAction.BREAK_PASS
-        # elif "È«ÍøËÑ" in content:
-        #     logger.info("²»´¦Àí")
-        #     e_context["reply"] = None
-        #     e_context.action = EventAction.BREAK_PASS
-        # elif "ÎÊ" in content:
-        #     e_context["reply"] = None
-        #     e_context.action = EventAction.CONTINUE
-        # return
-
-
-
+        context["reply"] = None
+        context.action = EventAction.BREAK_PASS
+        return
 
     def get_help_text(self, **kwargs):
-        return "×Ô¶¨Òå¹¦ÄÜ"
+        return "è‡ªå®šä¹‰åŠŸèƒ½"

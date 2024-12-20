@@ -7,7 +7,7 @@
 __pycache__/
 venv*
 *.pyc
-config.json
+
 QR.png
 nohup.out
 tmp
@@ -23,4 +23,3 @@ plugins/banwords/__pycache__
 plugins/banwords/lib/__pycache__
 
 client_config.json
-!config.json
