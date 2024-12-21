@@ -123,7 +123,7 @@ class My(Plugin):
                         reply_text_final += f"\n{item.get('url', '未知URL')}"
                         reply_text_final += "\n--------------------"
                     if 'is_time=0' in str(response_data):
-                        reply_text_final += "\n 🌐️资源来源网络，30分钟后删除"
+                        reply_text_final += "\n 🌐️资源来源网络，30分钟后删除请及时保存~"
                         reply_text_final += "\n--------------------"
                     else:
                         reply_text_final += "\n 不是短剧？请尝试：全网搜XX"
