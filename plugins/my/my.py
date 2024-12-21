@@ -26,7 +26,7 @@ class My(Plugin):
             curdir = os.path.dirname(__file__)
             if not conf:
                 # 配置不存在则写入默认配置
-                logger.info("配置不存在则写入默认配置")
+                logger.info("[My] 配置不存在则写入默认配置")
                 config_path = os.path.join(curdir, "config.json")
                 if not os.path.exists(config_path):
                     conf = {"src_url": "ks.jizhi.me1"}
@@ -34,7 +34,7 @@ class My(Plugin):
                         json.dump(conf, f, indent=4)
 
             self.src_url = conf["src_url"]
-            logger.info(f"src_url:   {self.src_url}")
+            logger.info(f"资源搜索src_url:   {self.src_url}")
             self.handlers[Event.ON_HANDLE_CONTEXT] = self.on_handle_context
             logger.info("[My] inited")
         except Exception as e:
