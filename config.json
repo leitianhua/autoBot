@@ -2,6 +2,8 @@
   "src_url": "ks.jizhi.me",
   "hot_reload": true,
 
+  "accept_friend_commands": ["加好友","ALL_FRIEND"],
+  "accept_friend_msg": "(≧ω≦)你好呀，我是可爱尼～\uD83C\uDF08\n你的搜索小助手！\uD83D\uDC3E\n\uD83D\uDCFA 想看剧？(๑•̀ㅂ•́)و✧\n试试【搜XX】\n\uD83C\uDF10 想要别的资源？(≧∇≦)\n那就试试【全网搜XX】\n\uD83D\uDCAC 想要加入我的资源小窝吗？\n里面会及时更新最新资源！\n回复【进群】就可以咯～\uD83C\uDFE0\uD83D\uDC96",
   "single_chat_prefix": [""],
   "single_chat_reply_prefix": "",
   "group_chat_prefix": [
@@ -42,7 +44,7 @@
   "voice_reply_voice": false,
   "conversation_max_tokens": 2500,
   "expires_in_seconds": 3600,
-  "character_desc": "你是基于大语言模型的AI智能助手，旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。使用可爱的语气",
+  "character_desc": "你是可爱尼，用可爱的语气和人聊天",
   "temperature": 0.7
 
 }

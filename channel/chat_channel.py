@@ -270,6 +270,8 @@ class ChatChannel(Channel):
                     reply.content = "[" + str(reply.type) + "]\n" + reply.content
                 elif reply.type == ReplyType.IMAGE_URL or reply.type == ReplyType.VOICE or reply.type == ReplyType.IMAGE or reply.type == ReplyType.FILE or reply.type == ReplyType.VIDEO or reply.type == ReplyType.VIDEO_URL:
                     pass
+                elif reply.type == ReplyType.ACCEPT_FRIEND:
+                    pass
                 else:
                     logger.error("[chat_channel] unknown reply type: {}".format(reply.type))
                     return
@@ -304,12 +306,18 @@ class ChatChannel(Channel):
 
     # 处理好友申请
     def _build_friend_request_reply(self, context):
-        logger.info("friend request content: {}".format(context.content["Content"]))
-        logger.info("accept_friend_commands list: {}".format(conf().get("accept_friend_commands", [])))
-        if context.content["Content"] in conf().get("accept_friend_commands", []):
-            return Reply(type=ReplyType.ACCEPT_FRIEND, content=True)
+        if isinstance(context.content, dict) and "Content" in context.content:
+            # 记录好友请求的内容
+            logger.info("friend request content: {}".format(context.content["Content"]))
+            # 检查内容是否在配置中定义的接受好友命令列表中
+            accept_commands = conf().get("accept_friend_commands", [])
+            if "ALL_FRIEND" in accept_commands or context.content["Content"] in accept_commands:
+                return Reply(type=ReplyType.ACCEPT_FRIEND, content=True)
+            else:
+                return Reply(type=ReplyType.ACCEPT_FRIEND, content=False)
         else:
-            return Reply(type=ReplyType.ACCEPT_FRIEND, content=False)
+            logger.error("Invalid context content: {}".format(context.content))
+            return None
 
     def _success_callback(self, session_id, **kwargs):  # 线程正常结束时的回调函数
         logger.debug("Worker return success, session_id = {}".format(session_id))

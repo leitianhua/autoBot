@@ -61,7 +61,8 @@ class My(Plugin):
         # "搜剧", "搜", "全网搜"
         if any(msg_content.startswith(prefix) for prefix in ["搜剧", "搜", "全网搜"]) and not msg_content.startswith("搜索"):
             # 获取用户名
-            user_nickname = context["context"]["msg"].actual_user_nickname
+            user_nickname = str(context["context"]["msg"].actual_user_nickname)
+            at_name = ('@' + user_nickname) if not user_nickname else ''
 
             # 移除前缀
             def remove_prefix(content, prefixes):
@@ -74,14 +75,13 @@ class My(Plugin):
             search_content = remove_prefix(msg_content, ["搜剧", "搜", "全网搜"]).strip()
 
             # http 搜索资源
-            def to_search(question):
-                logger.info(f"搜索资源：{question}")
+            def to_search(title):
                 url = f'https://{conf().get("src_url")}/api/search'
                 params = {
                     'is_time': '1',
                     'page_no': '1',
                     'page_size': '5',
-                    'title': question
+                    'title': title
                 }
                 try:
                     response = requests.get(url, params=params)
@@ -93,10 +93,10 @@ class My(Plugin):
                     return []
 
             # http 全网搜
-            def to_search_all(question):
+            def to_search_all(title):
                 url = f'https://{conf().get("src_url")}/api/other/all_search'
                 payload = {
-                    'title': question
+                    'title': title
                 }
                 try:
                     response = requests.post(url, json=payload)
@@ -110,15 +110,14 @@ class My(Plugin):
             # 回复内容
             def send_build(response_data):
                 if not response_data:
-                    reply_text_final = f"""
-                                {user_nickname}\n未找到，可换个关键词尝试哦~
-                                \n⚠️宁少写，不多写、错写~
-                                \n--------------------
-                                \n可访问以下链接提交资源需求
-                                \n'https://{conf().get("src_url")}
-                           """
+                    reply_text_final = f"{at_name}搜索内容：{search_content}"
+                    reply_text_final += "\n呜呜，还没找到呢~😔"
+                    reply_text_final += "\n⚠关键词错误或存在错别字"
+                    reply_text_final += "\n--------------------"
+                    reply_text_final += "\n⚠搜短剧指令：搜:XXX"
+                    reply_text_final += f"\n其他资源指令：全网搜:XX"
                 else:
-                    reply_text_final = f"@{user_nickname} 搜索内容：{search_content}\n--------------------"
+                    reply_text_final = f"{at_name} 搜索内容：{search_content}\n--------------------"
                     for item in response_data:
                         reply_text_final += f"\n 🌐️{item.get('title', '未知标题')}"
                         reply_text_final += f"\n{item.get('url', '未知URL')}"
@@ -133,31 +132,25 @@ class My(Plugin):
                     reply_text_final += "\n欢迎观看！如果喜欢可以喊你的朋友一起来哦"
                 wx_send(reply_text_final)
 
-            if '全网搜' in search_content:
-                send_build(to_search_all(search_content))
-            else:
-                # 初次搜索
-                def first_search(question1):
-                    response_data = to_search(search_content)
-                    if not response_data:
-                        # 通知用户深入搜索
-                        wx_send(f"@{user_nickname}\n正在深入搜索，请稍等...")
+            # 执行搜索
+            def perform_search():
+                response_data = to_search(search_content) if not msg_content.startswith("全网搜") else []
+                if not response_data:
+                    # 通知用户深入搜索
+                    wx_send(f"{at_name} 🔍正在努力翻找中，请稍等一下下哦~🐾✨")
 
-                        # 启动线程进行第二次搜索
-                        def second_search():
-                            send_build(to_search_all(question1))
+                    # 启动线程进行第二次搜索
+                    threading.Thread(target=send_build(to_search_all(search_content))).start()
+                else:
+                    # 如果第一次搜索找到结果，发送最终回复
+                    send_build(response_data)
 
-                        threading.Thread(target=second_search).start()
-                    else:
-                        # 如果第一次搜索找到结果，发送最终回复
-                        send_build(response_data)
+            # 启动线程执行第一次搜索
+            threading.Thread(target=perform_search()).start()
 
-                # 启动线程执行第一次搜索
-                threading.Thread(target=first_search(search_content)).start()
-
-        context["reply"] = None
-        context.action = EventAction.BREAK_PASS
-        return
+            context["reply"] = None
+            context.action = EventAction.BREAK_PASS
+            return
 
     def get_help_text(self, **kwargs):
         return "自定义功能"
