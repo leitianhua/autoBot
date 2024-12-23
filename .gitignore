@@ -11,7 +11,7 @@ venv*
 QR.png
 nohup.out
 tmp
-plugins.json
+
 itchat.pkl
 *.log
 user_datas.pkl

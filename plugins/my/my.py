@@ -113,23 +113,25 @@ class My(Plugin):
                     reply_text_final = f"{at_name}搜索内容：{search_content}"
                     reply_text_final += "\n呜呜，还没找到呢~😔"
                     reply_text_final += "\n⚠关键词错误或存在错别字"
-                    reply_text_final += "\n--------------------"
+                    reply_text_final += "\n————————————"
                     reply_text_final += "\n⚠搜短剧指令：搜:XXX"
                     reply_text_final += f"\n其他资源指令：全网搜:XX"
                 else:
-                    reply_text_final = f"{at_name} 搜索内容：{search_content}\n--------------------"
+                    reply_text_final = f"{at_name} 搜索内容：{search_content}\n————————————"
+                    logger.info(str(response_data))
                     for item in response_data:
-                        reply_text_final += f"\n 🌐️{item.get('title', '未知标题')}"
+                        reply_text_final += f"\n🌐️{item.get('title', '未知标题')}"
                         reply_text_final += f"\n{item.get('url', '未知URL')}"
-                        reply_text_final += "\n--------------------"
-                    if 'is_time=0' in str(response_data):
-                        reply_text_final += "\n 🌐️资源来源网络，30分钟后删除请及时保存~"
-                        reply_text_final += "\n--------------------"
+                        reply_text_final += "\n————————————"
+                    if "'is_time': 1" in str(response_data):
+                        reply_text_final += "\n⚠资源来源网络，30分钟后删除"
+                        reply_text_final += "\n⚠避免失效，请及时保存~💾"
+                        reply_text_final += "\n————————————"
                     else:
-                        reply_text_final += "\n 不是短剧？请尝试：全网搜XX"
-                        reply_text_final += "\n--------------------"
+                        reply_text_final += "\n🎬不是短剧？试试这招：全网搜XX！🔍"
+                        reply_text_final += "\n————————————"
 
-                    reply_text_final += "\n欢迎观看！如果喜欢可以喊你的朋友一起来哦"
+                    reply_text_final += "\n👯‍♂️加我或者拉我到群里，就能免费享用啦~🥰"
                 wx_send(reply_text_final)
 
             # 执行搜索
